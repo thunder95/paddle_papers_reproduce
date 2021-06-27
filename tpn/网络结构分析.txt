@@ -1,0 +1,106 @@
+"""
+depth: 3*4*6*3
+block1:
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 【没有relu】
+
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1
+    num_filters全是64
+
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=256 【输入*4】
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=64
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=64 【没有relu】
+
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=256 【输入*4】
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=64
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=64 【没有relu】
+
+    【add,此处有checkpoint， 输出256】
+    【relu】 【没有nonlocal】
+
+block2:
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=128
+    stride: 1*2*2, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=128
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 , num_filters=128 【没有relu】
+
+    stride: 1*2*2, pad: 0 , kernel: 1*1*1, num_filters=256
+
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=512  【输入*4】
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=128  
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=128 【没有relu】
+
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=512  【输入*4】
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=128  
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=128 【没有relu】
+
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=512  【输入*4】
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=128  
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=128 【没有relu】
+
+    【add,此处有checkpoint， 输出512】
+    【relu】 【没有nonlocal】
+
+block3:(注意inflate方式不同)
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=512
+    stride: 1*2*2, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=256
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 , num_filters=256 【没有relu】
+
+    stride: 1*2*2, pad: 0 , kernel: 1*1*1, num_filters=512
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=1024  
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=256  【除以*4】
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=256 【没有relu】
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=1024  
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=256  【除以*4】
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=256 【没有relu】
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=1024  
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=256  【除以*4】
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=256 【没有relu】
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=1024  
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=256  【除以*4】
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=256 【没有relu】
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=1024  
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=256  【除以*4】
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=256 【没有relu】
+
+    【add,此处有checkpoint， 输出1024】
+    【relu】 【没有nonlocal】
+
+block4:(注意inflate方式不同)
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=1024
+    stride: 1*2*2, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=512
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 , num_filters=512 【没有relu】
+
+    stride: 1*2*2, pad: 0 , kernel: 1*1*1, num_filters=1024
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=2048  
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=512  【除以*4】
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=512 【没有relu】
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=2048  
+    stride: 1*1*1, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=512  【除以*4】
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=512 【没有relu】
+    【add,此处有checkpoint， 输出1024】
+    【relu】 【没有nonlocal】
+"""
+
+     stride: 1*1*1, pad: ===== , kernel: =====
+    stride: =====, pad: 0, 1, 1 , kernel: 1*3*3
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 【没有relu】
+
+     stride: 1*1*1, pad: 0 , kernel: 1*1*1, num_filters=128
+    stride: 1*2*2, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=128
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 , num_filters=128 【没有relu】
+
+     stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=512
+    stride: 1*2*2, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=256
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 , num_filters=256 【没有relu】
+
+    stride: 1*1*1, pad: 1, 0, 0 , kernel: 3*1*1, num_filters=1024
+    stride: 1*2*2, pad: 0, 1, 1 , kernel: 1*3*3, num_filters=512
+    stride: 1*1*1, pad: 0 , kernel: 1*1*1 , num_filters=512 【没有relu】
