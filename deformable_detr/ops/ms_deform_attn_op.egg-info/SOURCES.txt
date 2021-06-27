@@ -1,0 +1,9 @@
+ms_deform_attn.cc
+ms_deform_attn_cuda.cu
+ms_deform_attn_setup.py
+ms_deform_im2col_cuda.cu
+ms_deform_attn_op.egg-info/PKG-INFO
+ms_deform_attn_op.egg-info/SOURCES.txt
+ms_deform_attn_op.egg-info/dependency_links.txt
+ms_deform_attn_op.egg-info/not-zip-safe
+ms_deform_attn_op.egg-info/top_level.txt
